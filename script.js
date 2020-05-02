@@ -7,19 +7,28 @@ eDisplayMoment.innerHTML = NowMoment;
 $(document).ready(function() {
 
     //var declarations
-    var now = moment();
+    var now = moment().hours();
     
     var schedule = { 
         time : [
-            "9:00am", 
-            "10:00am", 
-            "11:00am", 
-            "12:00pm", 
-            "1:00pm",
-            "2:00pm",
-            "3:00pm", 
-            "4:00pm", 
-            "5:00pm"
+            {display: "9:00am",
+        value: 9},
+            {display: "10:00am",
+        value: 10}, 
+            {display: "11:00am",
+        value: 11}, 
+            {display: "12:00pm",
+        value: 12}, 
+            {display: "1:00pm",
+        value: 13},
+            {display: "2:00pm",
+        value: 14},
+            {display: "3:00pm",
+        value: 15}, 
+            {display: "4:00pm", 
+        value: 16}, 
+            {display: "5:00pm",
+        value: 17}
         ], 
         userEntry : ["test",
             "test1",
@@ -30,6 +39,7 @@ $(document).ready(function() {
             "test6",
             "test7",
             "test8"]
+        
     };
 
 
@@ -38,64 +48,53 @@ $(document).ready(function() {
         for( let i = 0 ; i < schedule.time.length ; i++) {
             var divEl = $("<div>");
             divEl.addClass("row hour");
-            var h4El = $("<h4>");
-            h4El.addClass("timeline");
-            var inputEl = $("<input>").text((schedule.userEntry[i]));
+            var timeEl = $("<h4>");
+            timeEl.addClass("timeline");
+            var inputEl = $("<input>");
             inputEl.addClass("description");
-            var buttonEl = $("<button>").addClass("far fa-save saveBtn");
-            buttonEl.attr("data-time", (schedule.time[i]));
-            $(h4El).text((schedule.time[i]));
-
+            var buttonEl = $("<button>").attr("data-input", schedule.time[i].display ).addClass("btn btn-default far fa-save saveBtn");
             
-            
-            
+            $(timeEl).text(schedule.time[i].display);
+           
             $(".time-block").append(divEl);
-            $(divEl).append(h4El);
+            $(divEl).append(timeEl);
             $(divEl).append(inputEl);
             $(divEl).append(buttonEl);
 
-            var previous = schedule.time[i];
-            var next = schedule.time[i + 1];
-            console.log(next);
-
-            if (moment(schedule.time[i],'hh a').isBefore(now)){
+            if (schedule.time[i].value < now){
                 inputEl.addClass("past");
-            }else if (now.isBetween(previous, next) || now > schedule.time[8]){
+            }else if (schedule.time[i].value === now){
+                inputEl.removeClass("past");
                 inputEl.addClass("present");
-            // }else if(moment(schedule.time[i],'hh a').isSame(now)) {
-            //     inputEl.addClass("present");
+                inputEl.addClass("present");
 
-            }else if (moment(schedule.time[i],'hh a').isAfter(now)){
+            }else{ (schedule.time[i].value > now)
+                inputEl.removeClass("past");
+                inputEl.removeClass("present");
                 inputEl.addClass("future");
-            };
-
-            
-
-            localStorage.setItem(schedule.time[i], schedule.userEntry[i]);
-            console.log(schedule.time[i], schedule.userEntry[i]);
+            };   
 
         }
 
+        
+        
+
+        
         console.log(schedule)
         console.log(now);
         console.log(moment()._d);
 
         //function for local storage of descInput, saves to local storage as a string
-        $(".saveBtn").on("click", function(){
+        $(document).on("click", ".saveBtn", function(){
             console.log("__________________")
             console.log("clicked");
-            console.log(schedule.time[0])
             
             
-            var descInput = document.querySelector(".description").val().trim();
-             // use this to taget the input field ? $(this).attr("data-time");    
-            console.log(descInput);
-            localStorage.setItem(schedule.time[1], descInput);
-            console.log(descInput);
+
         });
-
+        
+        
     };
-
 
     render()
 });
