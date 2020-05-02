@@ -21,35 +21,31 @@ $(document).ready(function() {
             "4:00pm", 
             "5:00pm"
         ], 
-        userEntry : ["","","","","","","","",""]
-        //, 
-        // hour : ["moment('9:00am', 'h:mma')" , 
-        // moment('10:00am', 'h:mma') ,
-        // moment('11:00am', 'h:mma') ,
-        // moment('12:00am', 'h:mma') ,
-        // moment('1:00pm', 'h:mma') ,
-        // moment('2:00pm', 'h:mma') ,
-        // moment('3:00pm', 'h:mma') ,
-        // moment('4:00pm', 'h:mma') ,
-        // moment('5:00pm', 'h:mma') ,]
+        userEntry : ["test",
+            "test1",
+            "test2",
+            "test3",
+            "test4",
+            "test5",
+            "test6",
+            "test7",
+            "test8"]
     };
 
 
-    //function to check the timeslot relative to moment.
-    // function (event){
-
     //it checks the time within the hour element, to see where it falls within moment, and color .description accordingly.
-    // }
     function render(){
         for( let i = 0 ; i < schedule.time.length ; i++) {
             var divEl = $("<div>");
             divEl.addClass("row hour");
             var h4El = $("<h4>");
             h4El.addClass("timeline");
-            var inputEl = $("<input>");
+            var inputEl = $("<input>").text((schedule.userEntry[i]));
             inputEl.addClass("description");
-            var buttonEl = $("<button>").attr("data-input", schedule.time.length[i]).addClass("btn btn-default far fa-save saveBtn");
-            $(h4El).text(schedule.time[i]);
+            var buttonEl = $("<button>").addClass("far fa-save saveBtn");
+            buttonEl.attr("data-time", (schedule.time[i]));
+            $(h4El).text((schedule.time[i]));
+
             
             
             
@@ -58,45 +54,48 @@ $(document).ready(function() {
             $(divEl).append(inputEl);
             $(divEl).append(buttonEl);
 
-            if (moment(schedule.time[i],'h:mma').isBefore(now)){
+            var previous = schedule.time[i];
+            var next = schedule.time[i + 1];
+            console.log(next);
+
+            if (moment(schedule.time[i],'hh a').isBefore(now)){
                 inputEl.addClass("past");
-            } else if(moment(schedule.time[i],'h:mma').isSame(now)){
+            }else if (now.isBetween(previous, next) || now > schedule.time[8]){
                 inputEl.addClass("present");
-            }else if (moment(schedule.time[i],'h:mma').isAfter(now)){
+            // }else if(moment(schedule.time[i],'hh a').isSame(now)) {
+            //     inputEl.addClass("present");
+
+            }else if (moment(schedule.time[i],'hh a').isAfter(now)){
                 inputEl.addClass("future");
-            }
+            };
 
             
+
+            localStorage.setItem(schedule.time[i], schedule.userEntry[i]);
+            console.log(schedule.time[i], schedule.userEntry[i]);
 
         }
 
         console.log(schedule)
+        console.log(now);
+        console.log(moment()._d);
+
+        //function for local storage of descInput, saves to local storage as a string
+        $(".saveBtn").on("click", function(){
+            console.log("__________________")
+            console.log("clicked");
+            console.log(schedule.time[0])
+            
+            
+            var descInput = document.querySelector(".description").val().trim();
+             // use this to taget the input field ? $(this).attr("data-time");    
+            console.log(descInput);
+            localStorage.setItem(schedule.time[1], descInput);
+            console.log(descInput);
+        });
 
     };
 
-    //function for local storage of descInput, saves to local storage as a string
-    $(".saveBtn").on("click", function(){
-        console.log("__________________")
-        console.log("clicked");
-        console.log(schedule.hour[0])
-        
-        
-        var descInput = document.querySelector(".description").value;
-        console.log(descInput);
-        localStorage.setItem("description", descInput);
-        console.log(descInput);
-    });
 
-    
-    //onclick event for save button
-
-    //Before verification
-    //moment().isBefore(Moment|String|Number|Date|Array);
-
-    //Present verification
-    //moment().isSame(Moment|String|Number|Date|Array);
-
-    //After verification
-    //moment().isAfter(Moment|String|Number|Date|Array);
     render()
 });
