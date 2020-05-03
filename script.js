@@ -29,19 +29,8 @@ $(document).ready(function() {
         value: 16}, 
             {display: "5:00pm",
         value: 17}
-        ], 
-        userEntry : ["test",
-            "test1",
-            "test2",
-            "test3",
-            "test4",
-            "test5",
-            "test6",
-            "test7",
-            "test8"]
-        
+        ]        
     };
-
 
     //it checks the time within the hour element, to see where it falls within moment, and color .description accordingly.
     function render(){
@@ -49,18 +38,19 @@ $(document).ready(function() {
             var divEl = $("<div>");
             divEl.addClass("row hour");
             var timeEl = $("<h4>");
-            timeEl.addClass("timeline");
             var inputEl = $("<input>");
-            inputEl.addClass("description");
-            var buttonEl = $("<button>").attr("data-input", schedule.time[i].display ).addClass("btn btn-default far fa-save saveBtn");
+            inputEl.addClass("description").attr("textarea-"+ i);
+            var buttonEl = $("<button>");
+            buttonEl.attr("data-textarea", i)
+            buttonEl.addClass("btn btn-default far fa-save saveBtn");
             
             $(timeEl).text(schedule.time[i].display);
            
             $(".time-block").append(divEl);
-            $(divEl).append(timeEl);
-            $(divEl).append(inputEl);
+            $(divEl).append(timeEl).append(inputEl);
             $(divEl).append(buttonEl);
-
+            
+            //change colors based on time
             if (schedule.time[i].value < now){
                 inputEl.addClass("past");
             }else if (schedule.time[i].value === now){
@@ -74,25 +64,40 @@ $(document).ready(function() {
                 inputEl.addClass("future");
             };   
 
+            
+            $("button").click(function(e){
+                e.preventDefault();
+
+                console.log("__________________")
+                console.log("clicked");
+    
+                var textarea = "textarea-" + $(this).attr("data-textarea");
+                var value = $("#" + textarea).val().trim();
+                
+                localStorage.setItem(textarea, value);
+                
+            });
+    
+            function renderSavedItems(){
+                for (let i = 0; i < 9 ; i++){
+                    var textarea = "textarea-" + i;
+                    console.log(textarea)
+
+                    var value = localStorage.getItem(textarea);
+                    console.log(value)
+                    $("#" + textarea).val(value);
+                }
+            }
         }
 
-        
-        
-
-        
         console.log(schedule)
         console.log(now);
         console.log(moment()._d);
 
         //function for local storage of descInput, saves to local storage as a string
-        $(document).on("click", ".saveBtn", function(){
-            console.log("__________________")
-            console.log("clicked");
-            
-            
-
-        });
         
+        
+        renderSavedItems();
         
     };
 
